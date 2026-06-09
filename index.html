@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OncoBridge Bio</title>
+<link rel="icon" type="image/jpg" href="./images/Logo.jpg">
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for custom colors and font --><script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4056B5', 
+                        'accent': '#F59C00', 
+                        'accent-hover': '#E48A00', 
+                        'secondary-blue': '#6374D9',
+                        'dark-text': '#1C2433', 
+                        'light-bg': '#F9FBFF',
+                        'muted': '#5B6473',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Use Inter font globally and apply persistent background */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: url('./images/background.png'); 
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-color: #F9FBFF;
+            overflow-x: hidden;
+        }
+
+        /* Smooth scrolling behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Ensure main content is initially hidden by the script, but ready for transition */
+        #main-content {
+            transition: opacity 1s ease-in-out;
+            min-height: calc(100vh - 64px);
+        }
+        
+        /* Custom list style for better indentation */
+        .indented-list {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+        }
+        .indented-list li {
+            margin-left: 0.5rem;
+        }
+
+        /* Smooth fade-in animation for sections */
+        .page-content {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card hover lift effect */
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-8px);
+        }
+
+        /* Smooth button transitions */
+        button, a[class*="bg-accent"], a[class*="bg-primary"] {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Section spacing improvements */
+        section {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Improved text contrast on background */
+        .text-content-bg {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+        }
+
+        /* Splash overlay container (backdrop handled by #splash-backdrop) */
+        #splash-overlay {
+            background: transparent;
+        }
+
+        /* Splash logo origin to make movement feel natural */
+        #splash-logo {
+            transform-origin: center center;
+            will-change: transform, opacity;
+            opacity: 1;
+            z-index: 50;
+            position: relative;
+            /* Match header look during transition: padding + rounded background */
+            border-radius: 12px;
+            padding: 10px;
+            background: rgba(255,255,255,0.98);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            transition: transform 1.1s cubic-bezier(0.22, 0.8, 0.2, 1), opacity 0.6s ease, border-radius 200ms ease, background 200ms ease;
+        }
+        #header-logo-container {
+            margin-top: 65px;
+        }
+        /* Backdrop inside the splash overlay so we can fade background separately from the logo */
+        #splash-backdrop {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #1C2433 0%, #2a2f45 100%);
+            z-index: 40;
+        }
+
+        /* Slight header logo shadow to improve visibility + padding and rounded shape */
+        #header-logo {
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));
+            background: rgba(255,255,255,0.98);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+            display: inline-block;
+            border-radius: 7px;
+            padding: 5px;
+        }
+
+        /* Partner Logos Styling */
+        .partners-section {
+            background: linear-gradient(135deg, rgba(64, 86, 181, 0.03) 0%, rgba(99, 116, 217, 0.03) 100%);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+        }
+
+        .partners-image-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+
+        .partners-image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+        }
+
+        /* Partner Section Styles - Two Column Layout */
+        .partners-two-column {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: start;
+            padding: 3rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .partners-two-column {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        .partners-content {
+            padding-right: 2rem;
+        }
+
+        .partners-content h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1C2433;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        .partners-content p {
+            color: #5B6473;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            text-align: left;
+        }
+
+        .partners-cta {
+            display: inline-flex;
+            align-items: center;
+            color: #4056B5;
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .partners-cta:hover {
+            color: #F59C00;
+            transform: translateX(5px);
+        }
+
+        .partners-cta svg {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .partners-cta:hover svg {
+            transform: translateX(5px);
+        }
+
+        /* Partner Logos Grid */
+        .partners-logo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem 1.5rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 1024px) {
+            .partners-logo-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .partners-logo-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        .partner-logo-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: white;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 80px;
+        }
+
+        .partner-logo-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(64, 86, 181, 0.12);
+            border-color: #4056B5;
+        }
+
+        .partner-logo-item img {
+            max-width: 100%;
+            max-height: 60px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            filter: grayscale(30%) opacity(0.85);
+            transition: all 0.3s ease;
+        }
+
+        .partner-logo-item:hover img {
+            filter: grayscale(0%) opacity(1);
+        }
+
+        /* Category Sections */
+        .partner-category-section {
+            margin-bottom: 3rem;
+        }
+
+        .partner-category-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .partner-category-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #4056B5;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.875rem;
+        }
+
+
+    </style>
+</head>
+<body>
+    <noscript>
+        <style>
+            /* If JavaScript is disabled, show main content so headline is visible */
+            #main-content { opacity: 1 !important; }
+    
+        /* Partner Logos Styling */
+        .partners-section {
+            background: linear-gradient(135deg, rgba(64, 86, 181, 0.03) 0%, rgba(99, 116, 217, 0.03) 100%);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+        }
+
+        .partners-image-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+
+        .partners-image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+        }
+
+    </style>
+    </noscript>
+
+    <!-- SPLASH SCREEN OVERLAY - Logo animates from center to header position -->
+    <div id="splash-overlay" class="fixed inset-0 flex items-center justify-center z-[100]">
+        <!-- Backdrop (fades separately) -->
+        <div id="splash-backdrop" class=""></div>
+           <!-- SPLASH SCREEN LOGO: Use same file as header, larger on launch -->
+           <img id="splash-logo" 
+               class="h-56 w-auto transition-all duration-1000 ease-in-out" 
+               src="./images/Logo.jpg" 
+               alt="OncoBridge Bio Logo">
+    </div>
+
+
+    <!-- Navigation Bar (Sticky and high Z-index) --><header class="bg-white/95 backdrop-filter backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-200/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo Slot - Target for animation transition --><a href="#" class="flex-shrink-0" id="header-logo-container">
+                <!-- HEADER LOGO --><img id="header-logo" class="h-24 w-auto transition-all duration-500 shadow-sm" 
+                    src="./images/Logo.jpg" alt="OncoBridge Bio Logo">
+             </a>
+                
+                <!-- Navigation Links for SPA (Top Right on Desktop) --><nav class="hidden md:flex space-x-1">
+                    <a href="#" data-target="home" class="nav-link px-3 py-2 rounded-lg text-primary font-semibold hover:text-secondary-blue hover:bg-light-bg transition duration-200">Home</a>
+                    <a href="#" data-target="services" class="nav-link px-3 py-2 rounded-lg text-dark-text hover:text-secondary-blue hover:bg-light-bg transition duration-200">Our Services</a>
+                    <a href="#" data-target="collaborations" class="nav-link px-3 py-2 rounded-lg text-dark-text hover:text-secondary-blue hover:bg-light-bg transition duration-200">Collaborations</a>
+                    <a href="#" data-target="about" class="nav-link px-3 py-2 rounded-lg text-dark-text hover:text-secondary-blue hover:bg-light-bg transition duration-200">About Us</a>
+                    <a href="#" data-target="contact" class="nav-link px-3 py-2 rounded-lg text-dark-text hover:text-secondary-blue hover:bg-light-bg transition duration-200">Contact Us</a>
+                </nav>
+                
+                <!-- Mobile Menu Button (Hamburger) --><button id="mobile-menu-button" class="md:hidden text-dark-text hover:text-primary focus:outline-none transition duration-200">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu (Initially hidden) --><div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/30">
+            <div class="pt-2 pb-3 space-y-1 px-2">
+                <a href="#" data-target="home" class="nav-link block px-3 py-2 rounded-lg text-base font-medium text-primary hover:bg-light-bg transition duration-200">Home</a>
+                <a href="#" data-target="services" class="nav-link block px-3 py-2 rounded-lg text-base font-medium text-dark-text hover:text-primary hover:bg-light-bg transition duration-200">Our Services</a>
+                <a href="#" data-target="collaborations" class="nav-link block px-3 py-2 rounded-lg text-base font-medium text-dark-text hover:text-primary hover:bg-light-bg transition duration-200">Collaborations</a>
+                <a href="#" data-target="about" class="nav-link block px-3 py-2 rounded-lg text-base font-medium text-dark-text hover:text-primary hover:bg-light-bg transition duration-200">About Us</a>
+                <a href="#" data-target="contact" class="nav-link block px-3 py-2 rounded-lg text-base font-medium text-dark-text hover:text-primary hover:bg-light-bg transition duration-200">Contact Us</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper (Contains all SPA pages) --><main id="main-content" style="opacity: 0;"> 
+
+        <!-- 1. HOME PAGE (The Hero Section) -->
+        <section data-page="home" id="page-home" class="page-content min-h-[calc(100vh-64px)] flex items-center justify-center text-center relative overflow-hidden">
+            <!-- Subtle gradient overlay to enhance text readability (reduced opacity for better contrast) -->
+                <div class="absolute inset-0 bg-gradient-to-t from-dark-text/10 to-dark-text/45"></div>
+ 
+            <div class="max-w-4xl mx-auto  px-4 sm:px-6 lg:px-8 z-30 py-20 flex flex-col text-center mb-16">
+                <!-- Main Header -->
+                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight mb-6" style="text-shadow: 0 8px 30px rgba(0,0,0,0.55);">
+                    Revolutionizing Cancer Diagnostics
+                </h1>
+                <!-- Sub Header --><p class="text-xl sm:text-2xl text-secondary-blue mb-10 max-w-3xl mx-auto font-medium">
+                    Empowering Precision Medicine through Computational Intelligence.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <!-- Explore Our Work Button --><a href="#" data-target="services" class="nav-link px-10 py-4 text-lg font-bold rounded-full text-dark-text bg-accent hover:bg-accent-hover transition duration-200 shadow-2xl transform hover:scale-105">
+                        Explore Our Work
+                    </a>
+                    <!-- Collaborate with us Button --><a href="#" data-target="collaborations" class="nav-link px-10 py-4 text-lg font-bold rounded-full text-dark-text bg-accent hover:bg-accent-hover transition duration-200 shadow-2xl transform hover:scale-105">
+                        Collaborate with Us
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. OUR SERVICES PAGE --><section data-page="services" id="page-services" class="page-content py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-content-bg py-12 px-8 mb-16">
+                    <div class="text-center">
+                        <span class="text-primary font-semibold text-sm uppercase tracking-wider">What We Offer</span>
+                        <h2 class="mt-4 text-3xl font-extrabold text-dark-text sm:text-4xl lg:text-5xl">
+                            Integrated Organoid & Analytical Services
+                        </h2>
+                        <p class="mt-6 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
+                            We provide full-lifecycle support for organoid research, from development and sequencing to advanced computational analysis.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Features Grid (5 services in a 3-column grid) --><div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    
+                    <!-- Card 1: Organoid Development -->
+                    <div class="bg-white p-8 rounded-2xl shadow-md card-hover border border-gray-100">
+                        <div class="flex items-center justify-center h-14 w-14 rounded-full bg-gradient-to-br from-primary to-secondary-blue text-white mb-6">
+                            <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 12h2m-2 2h2m10-2h2m-2 2h2M3 10h18a2 2 0 012 2v2a2 2 0 01-2 2H3a2 2 0 01-2-2v-2a2 2 0 012-2z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark-text mb-3">Organoid Development</h3>
+                        <p class="text-muted mb-5 leading-relaxed">
+                            We generate and maintain high-fidelity tumor organoids derived from clinical or research samples. Our organoid systems preserve critical biological characteristics, making them ideal for cancer research and experimental programs.
+                        </p>
+                        <h4 class="font-semibold text-dark-text mt-4 mb-3 text-sm uppercase tracking-wide">What We Offer:</h4>
+                        <ul class="text-sm text-muted indented-list space-y-2">
+                            <li>Establishment of primary tumor organoids</li>
+                            <li>Expansion and routine maintenance</li>
+                            <li>Morphological and growth evaluation</li>
+                            <li>Cryopreservation and recovery options</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Card 2: Organoid Sequencing -->
+                    <div class="bg-white p-8 rounded-2xl shadow-md card-hover border border-gray-100">
+                        <div class="flex items-center justify-center h-14 w-14 rounded-full bg-gradient-to-br from-primary to-secondary-blue text-white mb-6">
+                            <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 16.5A6.5 6.5 0 103.5 10a6.5 6.5 0 0113 0M3.5 10H10m0 0a6.5 6.5 0 0113 0m-6.5 6.5V10m0 0V3.5M10 10L3.5 3.5m0 13L10 10m6.5 6.5L10 10" /></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark-text mb-3">Organoid Sequencing</h3>
+                        <p class="text-muted mb-5 leading-relaxed">
+                            We provide sequencing services optimized for organoid-based research. Our workflows ensure reliable molecular profiling suitable for discovery or translational applications.
+                        </p>
+                        <h4 class="font-semibold text-dark-text mt-4 mb-3 text-sm uppercase tracking-wide">Available Assays:</h4>
+                        <ul class="text-sm text-muted indented-list space-y-2">
+                            <li>RNA sequencing</li>
+                            <li>Whole-exome sequencing</li>
+                            <li>Targeted oncology gene panels</li>
+                            <li>DNA/RNA extraction and QC assessment</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Card 3: Organoid Analytics -->
+                    <div class="bg-white p-8 rounded-2xl shadow-md card-hover border border-gray-100">
+                        <div class="flex items-center justify-center h-14 w-14 rounded-full bg-gradient-to-br from-primary to-secondary-blue text-white mb-6">
+                            <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-2v2m-4-2v2M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark-text mb-3">Organoid Analytics</h3>
+                        <p class="text-muted mb-5 leading-relaxed">
+                            We deliver structured analytical summaries derived from organoid studies, helping teams interpret experimental outcomes with clarity and biological context. All outputs maintain strict confidentiality and do not disclose proprietary internal methodologies.
+                        </p>
+                        <h4 class="font-semibold text-dark-text mt-4 mb-3 text-sm uppercase tracking-wide">Analytics May Include:</h4>
+                        <ul class="text-sm text-muted indented-list space-y-2">
+                            <li>Gene-level summaries</li>
+                            <li>Comparative analysis across conditions</li>
+                            <li>Growth kinetics and behavior metrics</li>
+                            <li>Research-oriented interpretations</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Card 4: Custom Research Programs -->
+                    <div class="bg-white p-8 rounded-2xl shadow-md card-hover border border-gray-100">
+                        <div class="flex items-center justify-center h-14 w-14 rounded-full bg-gradient-to-br from-primary to-secondary-blue text-white mb-6">
+                            <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8zm-2 1h4m-2 4h-2M12 21a9 9 0 100-18 9 9 0 000 18z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark-text mb-3">Custom Research Programs</h3>
+                        <p class="text-muted leading-relaxed">
+                            We collaborate with hospitals, oncology groups, academic laboratories, and biotech partners to execute specialized organoid-based projects tailored to specific scientific or clinical goals.
+                        </p>
+                    </div>
+
+                    <!-- Card 5: Organoid Systems we offer -->
+                    <div class="bg-white p-8 rounded-2xl shadow-md card-hover border border-gray-100">
+                        <div class="flex items-center justify-center h-14 w-14 rounded-full bg-gradient-to-br from-primary to-secondary-blue text-white mb-6">
+                            <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark-text mb-3">Organoid Systems we offer</h3>
+                        <p class="text-muted mb-5 leading-relaxed">
+                            Our library includes tumor organoids across several cancer types, with continuous expansion based on research and clinical requirements. Custom organoid development is available on request.
+                        </p>
+                        <h4 class="font-semibold text-dark-text mt-4 mb-3 text-sm uppercase tracking-wide">Currently Available:</h4>
+                        <ul class="text-sm text-muted indented-list grid grid-cols-2 gap-x-4 gap-y-2">
+                            <li>Glioblastoma</li>
+                            <li>Breast Cancer</li>
+                            <li>Colon Cancer</li>
+                            <li>Multiple Myeloma</li>
+                            <li>Lung Cancer</li>
+                            <li>Cervical Cancer</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-16 text-center">
+                    <a href="#" data-target="contact" class="nav-link inline-block px-10 py-4 text-lg font-semibold rounded-full text-dark-text bg-accent hover:bg-accent-hover transition duration-200 shadow-lg transform hover:scale-105">
+                        Schedule a Consultation
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 3. COLLABORATIONS PAGE --><section data-page="collaborations" id="page-collaborations" class="page-content py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-content-bg py-12 px-8 mb-12">
+                    <div class="text-center">
+                        <span class="text-primary font-semibold text-sm uppercase tracking-wider">Partnerships that Power Progress</span>
+                        <h2 class="mt-4 text-3xl font-extrabold text-dark-text sm:text-4xl lg:text-5xl">
+                            Our Trusted Collaborators
+                        </h2>
+<!-- Partners Section - Two Column Layout -->
+                    <div class="partners-two-column">
+                        <!-- Left Column: Content -->
+                        <div class="partners-content">
+                            <h3>Working with Trusted Collaborators</h3>
+                            <p>Strategic cooperation partners who collaborate with us to deliver cutting-edge solutions in oncology research and diagnostics.</p>
+                            <p>Together, we're building the future of cancer research and treatment approaches.</p>
+                            <a href="#" data-target="contact" class="partners-cta nav-link">
+                                Learn about partnership opportunities
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </div>
+
+                        <!-- Right Column: Partner Logos -->
+                        <div>
+                            <!-- Collaboration Partners -->
+                                <div class="partners-logo-grid">
+                                    <div class="partner-logo-item">
+                                        <img src="./images/Partners/Aether_Health.png" alt="Aether Health">
+                                    </div>
+                                    <div class="partner-logo-item">
+                                        <img src="./images/Partners/Basavtharkam.jpg" alt="Basavatarakam Indo-American Cancer Hospital & Research Institute">
+                                    </div>
+                                    <div class="partner-logo-item">
+                                        <img src="./images/Partners/CIHR.png" alt="CIHR - Canadian Institutes of Health Research">
+                                    </div>
+                                    <div class="partner-logo-item">
+                                        <img src="./images/Partners/Henry_Ford.png" alt="Henry Ford Health">
+                                    </div>
+                                    <div class="partner-logo-item">
+                                        <img src="./images/Partners/Medisetti.png" alt="Medisetti Cancer Institute">
+                                    </div>
+                                    <div class="partner-logo-item">
+                                        <img src="./images/Partners/NSERC.png" alt="NSERC">
+                                    </div>
+                                    <div class="partner-logo-item">
+                                        <img src="./images/Partners/PorterLab.png" alt="Porter Lab">
+                                    </div>
+                                    <div class="partner-logo-item">
+                                        <img src="./images/Partners/Share.png" alt="Share">
+                                    </div>
+                                    <div class="partner-logo-item">
+                                        <img src="./images/Partners/Windsor.png" alt="University of Windsor">
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+
+                           
+                    </div>
+
+
+                    </div>
+                </div>
+
+                <!-- Two-Column Collaboration Section --><div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
+                    <!-- Image -->
+                    <div class="order-2 md:order-1 h-full p-6 md:p-10 flex items-center justify-center">
+                        <div class="bg-white w-full h-full rounded-2xl shadow-lg p-6 md:p-8 overflow-hidden flex items-center justify-center max-h-[760px]">
+                            <img class="w-full h-auto md:h-full object-contain block" 
+                                 src="./images/Collaboration.png" 
+                                 alt="Collaboration and Partnership Illustration">
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="order-1 md:order-2 flex flex-col justify-center h-full px-6 md:px-10">
+                        <h3 class="text-2xl font-bold text-dark-text mb-4">Work with us</h3>
+                        <p class="text-muted mb-6 leading-relaxed">
+                            OncoBridge Bio partners with institutions across the oncology ecosystem to support:
+                        </p>
+                        <ul class="text-muted indented-list space-y-3 mb-8">
+                            <li>Translational research</li>
+                            <li>Experimental therapeutics</li>
+                            <li>Diagnostic development</li>
+                            <li>Preclinical discovery</li>
+                            <li>Academic research programs</li>
+                        </ul>
+                        <p class="text-muted mb-8 leading-relaxed">
+                            Our collaboration models are flexible and built around scientific quality, transparency, and timely execution.
+                        </p>
+                        <a href="#" data-target="contact" class="nav-link inline-block px-10 py-4 text-lg font-semibold rounded-full text-dark-text bg-accent hover:bg-accent-hover transition duration-200 shadow-lg transform hover:scale-105">
+                            Start a Collaboration
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. ABOUT US PAGE --><section data-page="about" id="page-about" class="page-content py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-content-bg py-12 px-8 mb-12">
+                    <div class="text-center">
+                        <span class="text-primary font-semibold text-sm uppercase tracking-wider">Who We Are</span>
+                        <h2 class="mt-4 text-3xl font-extrabold text-dark-text sm:text-4xl lg:text-5xl">
+                            About OncoBridge Bio
+                        </h2>
+                        <p class="mt-6 text-lg text-muted max-w-4xl mx-auto leading-relaxed">
+                            OncoBridge Bio is a modern oncology solutions company focused on developing advanced tumor models and computational frameworks that enable deeper biological understanding. We support clinicians, researchers, and industry partners by providing accurate, biology-grounded systems that enhance cancer diagnostics, discovery, and translational research. Serving clients around the world.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Two-Column Mission and Approach Section --><div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <!-- Column 1: Our Mission -->
+                    <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100 border-t-4 border-t-accent card-hover">
+                        <div class="mb-6">
+                            <img class="w-full h-auto rounded-xl mb-6 object-cover" 
+                                 src="./images/Mission.png" 
+                                 alt="DNA Helix and Data Overlay">
+                        </div>
+                        <h3 class="text-2xl font-bold text-dark-text mb-4">Our Mission</h3>
+                        <p class="text-muted mb-4 leading-relaxed">
+                            To empower precision medicine through high-quality tumor modeling, streamlined experimental workflows, and structured biological insights.
+                        </p>
+                        <p class="text-muted leading-relaxed">
+                            A future where every cancer patient benefits from diagnostics developed using biologically relevant tumor systems and reliable analytical frameworks.
+                        </p>
+                    </div>
+
+                    <!-- Column 2: Our Approach -->
+                    <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100 border-t-4 border-t-secondary-blue card-hover">
+                        <div class="mb-6">
+                            <img class="w-full h-auto rounded-xl mb-6 object-cover" 
+                                src="./images/Approach.jpeg" 
+                                alt="Lab Equipment and Data Dashboard">
+                        </div>
+                        <h3 class="text-2xl font-bold text-dark-text mb-4">Our Approach</h3>
+                        <p class="text-muted mb-4 leading-relaxed">
+                            We bring together standardized laboratory workflows, robust experimental systems, and computational interpretation to deliver consistent, high-resolution biological information.
+                        </p>
+                        <p class="text-muted leading-relaxed">
+                            Our solutions are designed to support research programs, early discovery, and translational oncology initiatives.
+                        </p>
+                    </div>
+                </div>
+
+<!-- LEADERSHIP TEAM SECTION (Updated Layout: 3 in first row, 2 in second) -->
+
+                <div class="mt-12">
+
+                    <div class="text-center mb-12">
+
+                        <h2 class="text-3xl font-extrabold text-dark-text sm:text-4xl">
+
+                            Our Leadership Team
+
+                        </h2>
+
+                        <p class="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
+
+                            A blend of clinical, scientific, technological, and business expertise driving precision oncology forward.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- Leadership Grid: First Row (Dr. Srinath, Dr. Dorota, Dr. Lisa) -->
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center mb-4">
+
+                        
+
+                        <!-- Member 1: Dr. Srinath Kandalam (Founder) -->
+
+                        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 card-hover text-center max-w-md w-full sm:max-w-none">
+
+                            <h3 class="text-xl font-bold text-dark-text mb-1">Dr. Srinath Kandalam</h3>
+
+                            <p class="text-primary font-semibold text-sm mb-3">Founder</p>
+
+                            <p class="text-sm text-muted mb-2 font-medium">MBBS, Clinical Research, Internal Medicine (Cert.)</p>
+
+                            <p class="text-sm text-dark-text">Precision oncology + Clinical AI integration</p>
+
+                        </div>
+
+
+
+                        <!-- Member 2: Dr. Dorota Lubanska (Co-Founder) -->
+
+                        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 card-hover text-center max-w-md w-full sm:max-w-none">
+
+                            <h3 class="text-xl font-bold text-dark-text mb-1">Dr. Dorota Lubanska</h3>
+
+                            <p class="text-primary font-semibold text-sm mb-3">Co-Founder</p>
+
+                            <p class="text-sm text-muted mb-2 font-medium">Ph.D Organoid biology specialist</p>
+
+                            <p class="text-sm text-dark-text">Leads PDO & biobank programs</p>
+
+                        </div>
+
+
+
+                        <!-- Member 3: Dr. Lisa Porter (Scientific Advisor) -->
+
+                        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 card-hover text-center max-w-md w-full sm:max-w-none">
+
+                            <h3 class="text-xl font-bold text-dark-text mb-1">Dr. Lisa Porter</h3>
+
+                            <p class="text-primary font-semibold text-sm mb-3">Scientific Advisor</p>
+
+                            <p class="text-sm text-muted mb-2 font-medium">Ph.D, Distinguished Professor</p>
+
+                            <p class="text-sm text-dark-text">Founding Director, WE SPARK Health Institute, Distinguished Professor, Biomedical Sciences, University of Windsor</p>
+
+                        </div>
+
+                    </div>
+
+                    
+
+                    <!-- Leadership Grid: Second Row (Uday Deorukhakar,Dr. Hima Tej Eppanapally) - Centered -->
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8 justify-items-center max-w-4xl mx-auto mb-4">
+
+
+
+                        <!-- Member 4: Uday Deorukhakar (Head of Technology) -->
+
+                        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 card-hover text-center max-w-md w-full sm:max-w-none">
+
+                            <h3 class="text-xl font-bold text-dark-text mb-1">Uday Deorukhakar</h3>
+
+                            <p class="text-primary font-semibold text-sm mb-3">Head of Technology</p>
+
+                            <p class="text-sm text-muted mb-2 font-medium">Technology architecture & Governance</p>
+
+                            <p class="text-sm text-dark-text">Strategic technical leadership</p>
+
+
+                        </div>
+
+
+
+                        <!-- Member 5: Dr. Hima Tej Eppanapally (Business Development (U.S.)) -->
+
+                        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 card-hover text-center max-w-md w-full sm:max-w-none">
+
+                            <h3 class="text-xl font-bold text-dark-text mb-1">Dr. Hima Tej Eppanapally</h3>
+
+                            <p class="text-primary font-semibold text-sm mb-3">Business Development (U.S.)</p>
+
+                            <p class="text-sm text-muted mb-2 font-medium">Strategic Partnerships & Market Expansion</p>
+
+                            <p class="text-sm text-dark-text">Driving international growth and commercial strategy</p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Leadership Grid: Third Row (Akash, Snehith) -->
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8 justify-items-center max-w-4xl mx-auto">
+
+                        
+
+                        <!-- Member 6: Akash Bhatia (Technology & Business Advisor) -->
+
+                        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 card-hover text-center max-w-md w-full sm:max-w-none">
+
+                            <h3 class="text-xl font-bold text-dark-text mb-1">Akash Bhatia</h3>
+
+                            <p class="text-primary font-semibold text-sm mb-3">Technology & Business Advisor</p>
+
+                            <p class="text-sm text-muted mb-2 font-medium">Co-founder & CFO, Infinite Analytics</p>
+
+                            <p class="text-sm text-dark-text">Strategic technology and business development</p>
+
+                        </div>
+
+
+
+                        <!-- Member 7: Snehith Allamraju (Data and Analytics Advisor) -->
+
+                        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 card-hover text-center max-w-md w-full sm:max-w-none">
+
+                            <h3 class="text-xl font-bold text-dark-text mb-1">Snehith Allamraju</h3>
+
+                            <p class="text-primary font-semibold text-sm mb-3">Data and Analytics Advisor</p>
+
+                            <p class="text-sm text-muted mb-2 font-medium">Director, Data & Analytics at RSM US LLP</p>
+
+                            <p class="text-sm text-dark-text">Advanced analytics and data strategy</p>
+
+                        </div>
+
+                        
+
+                    </div>
+
+                </div>
+
+
+
+
+            </div>
+        </section>
+
+        <!-- 5. CONTACT US PAGE (CTA) -->
+        <section data-page="contact" id="page-contact" class="page-content py-20">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white/95 backdrop-blur-md text-center p-12 rounded-2xl shadow-xl border border-gray-200 border-t-4 border-t-primary">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-dark-text mb-4">
+                        Questions or Comments?
+                    </h2>
+                    <p class="text-lg text-muted mb-10 max-w-2xl mx-auto leading-relaxed">
+                        We know that our clients have unique needs. Send us a message, and we will get back to you soon.
+                    </p>
+
+                    <!-- Contact Info Section -->
+                   <div class="text-left bg-light-bg p-8 rounded-xl mb-10">
+                        <h3 class="text-lg font-bold text-primary mb-4">OncoBridge Bio</h3>
+                        <p class="text-muted"><strong>Email:</strong> <a href="mailto:info@oncobridgebio.com">info@oncobridgebio.com</a></p>
+                    </div>
+
+                    
+                    <!-- Contact Form -->
+                    <form id="contactForm" class="space-y-4 text-left">
+                        <div>
+                            <input type="text" 
+                                   id="name"
+                                   name="name" 
+                                   placeholder="Your Name *" 
+                                   required
+                                   class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-150 shadow-inner">
+                        </div>
+                        
+                        <div>
+                            <input type="email" 
+                                   id="email"
+                                   name="email" 
+                                   placeholder="Your Email *" 
+                                   required
+                                   class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-150 shadow-inner">
+                        </div>
+                        
+                        <div>
+                            <input type="text" 
+                                   id="organization"
+                                   name="organization" 
+                                   placeholder="Your Organization (Optional)" 
+                                   class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-150 shadow-inner">
+                        </div>
+                        
+                        <div>
+                            <textarea id="message"
+                                      name="message" 
+                                      placeholder="Tell us about your organization and interest... *" 
+                                      rows="5" 
+                                      required
+                                      class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-150 shadow-inner resize-none"></textarea>
+                        </div>
+                        
+                        <!-- Status Message -->
+                        <div id="formStatus" class="hidden p-4 rounded-lg text-sm"></div>
+                        
+                        <button type="submit" 
+                                id="submitBtn"
+                                class="w-full px-10 py-4 text-lg font-semibold rounded-full text-dark-text bg-accent hover:bg-accent-hover transition duration-200 shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Send Inquiry
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-dark-text to-primary py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="md:flex md:justify-between md:items-center text-center md:text-left">
+                <!-- Logo/Copyright -->
+                <div>
+                    <p class="text-muted text-sm">
+                        &copy; 2025 OncoBridge Bio. All rights reserved.
+                    </p>
+<!--                   
+ <a href="#" class="text-accent hover:text-accent-hover transition duration-200 text-sm mt-2 block md:inline-block">Privacy Policy</a>
+-->
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // --- SPA (Single Page Application) Logic ---
+
+        const pageContentElements = document.querySelectorAll('.page-content');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        /**
+         * Shows the specified page content and updates active navigation links.
+         */
+        function showPage(pageName) {
+            // 1. Hide all pages
+            pageContentElements.forEach(page => {
+                page.style.display = 'none';
+            });
+
+            // 2. Show the target page
+            const targetPage = document.querySelector(`[data-page="${pageName}"]`);
+            if (targetPage) {
+                targetPage.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // 3. Update active link styling
+            navLinks.forEach(link => {
+                if (link.getAttribute('data-target')) {
+                    const target = link.getAttribute('data-target');
+                    const isActive = target === pageName;
+                    
+                    if (link.closest('nav')) {
+                        link.classList.toggle('text-primary', isActive);
+                        link.classList.toggle('font-semibold', isActive);
+                        link.classList.toggle('text-dark-text', !isActive);
+                    }
+                    
+                    if (link.closest('#mobile-menu')) {
+                        link.classList.toggle('text-primary', isActive);
+                        link.classList.toggle('font-medium', isActive);
+                        link.classList.toggle('text-dark-text', !isActive);
+                        link.classList.toggle('bg-light-bg', isActive);
+                    }
+                }
+            });
+
+            // 4. Close mobile menu if open
+            mobileMenu.classList.add('hidden');
+        }
+
+        // --- Event Listeners ---
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetPage = link.getAttribute('data-target');
+                if (targetPage) {
+                    showPage(targetPage);
+                }
+            });
+        });
+
+        document.getElementById('mobile-menu-button').addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // --- Splash Screen & Logo Animation ---
+
+        function initializeApp() {
+            const splashOverlay = document.getElementById('splash-overlay');
+            const mainContent = document.getElementById('main-content');
+            const splashLogo = document.getElementById('splash-logo');
+            const headerLogoContainer = document.getElementById('header-logo-container');
+            const headerLogo = document.getElementById('header-logo');
+            
+            const ANIMATION_DURATION = 2000; // slightly slower transition for smoothness
+            const INITIAL_DELAY = 800; // small linger before moving
+
+            // Initial State
+            showPage('home');
+            headerLogo.style.opacity = '0';
+
+            // Splash logo is already styled larger in CSS so it appears large immediately.
+
+            // Start animation after delay
+            setTimeout(() => {
+                // Re-measure positions
+                const splashRect = splashLogo.getBoundingClientRect();
+                const headerRect = headerLogoContainer.getBoundingClientRect();
+
+                // Compute centers to align logo centers (prevents final offset/jump)
+                const splashCenterX = splashRect.left + splashRect.width / 2;
+                const splashCenterY = splashRect.top + splashRect.height / 2;
+                const headerCenterX = headerRect.left + headerRect.width / 2;
+                const headerCenterY = headerRect.top + headerRect.height / 2;
+
+                // Calculate translation from current center to header center
+                const dx = headerCenterX - splashCenterX;
+                const dy = headerCenterY - splashCenterY;
+
+                // Compute final scale so the logo matches the header logo height
+                const finalScale = headerRect.height / splashRect.height;
+
+                // Lock the splash image to viewport (fixed) at its current position so transforms
+                // are applied cleanly without layout shifts. Also fix explicit size to avoid reflow.
+                splashLogo.style.position = 'fixed';
+                splashLogo.style.left = `${splashRect.left}px`;
+                splashLogo.style.top = `${splashRect.top}px`;
+                splashLogo.style.width = `${splashRect.width}px`;
+                splashLogo.style.height = `${splashRect.height}px`;
+                splashLogo.style.margin = '0';
+                splashLogo.style.zIndex = '2000';
+                splashLogo.style.transformOrigin = 'center center';
+
+                // Match visual appearance to header (radius + background) to avoid final jump
+                try {
+                    const headerStyles = window.getComputedStyle(headerLogo);
+                    splashLogo.style.borderRadius = headerStyles.borderRadius || '12px';
+                    splashLogo.style.background = headerStyles.backgroundColor || 'rgba(255,255,255,0.98)';
+                } catch (e) {
+                    // ignore if computed styles not available
+                }
+
+                // Force a reflow to ensure the fixed positioning is applied before animating
+                splashLogo.getBoundingClientRect();
+
+                // Use GPU-accelerated transform (translate3d) and a smooth bezier for natural motion
+                splashLogo.style.transition = `transform ${ANIMATION_DURATION}ms cubic-bezier(0.22, 0.8, 0.2, 1), opacity ${Math.floor(ANIMATION_DURATION/2.5)}ms ease-in-out`;
+
+                // Fade the backdrop out during the movement so the page becomes visible
+                const splashBackdrop = document.getElementById('splash-backdrop');
+                if (splashBackdrop) {
+                    splashBackdrop.style.transition = `opacity ${ANIMATION_DURATION}ms ease-in-out`;
+                    splashBackdrop.style.opacity = '0';
+                }
+
+                // Ensure the page fades in during movement
+                mainContent.style.transition = `opacity ${ANIMATION_DURATION}ms ease-in-out`;
+                mainContent.style.opacity = '1';
+
+                // Trigger translate3d + scale; keep splash visible throughout movement
+                // Use a small extra safety clamp on finalScale to avoid tiny pixel rounding jumps
+                const safeFinalScale = Math.max(0.2, Math.min(2, finalScale));
+                splashLogo.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${safeFinalScale})`;
+                splashLogo.style.opacity = '1';
+
+                // After the move completes, prepare a smooth cross-fade into the header logo
+                setTimeout(() => {
+                    const FADE_DURATION = 420;
+
+                    // Copy visual properties from the splash to the header so they match exactly
+                    try {
+                        const splashStyles = window.getComputedStyle(splashLogo);
+                        // Apply sizing to header logo to match the final visual badge
+                        headerLogo.style.width = `${headerRect.width}px`;
+                        headerLogo.style.height = `${headerRect.height}px`;
+                        headerLogo.style.boxSizing = 'border-box';
+
+                        // Copy padding, borderRadius, background and boxShadow where available
+                        // headerLogo.style.padding = splashStyles.padding || '5px';
+                        headerLogo.style.borderRadius = splashStyles.borderRadius || '12px';
+                        headerLogo.style.background = splashStyles.backgroundColor || 'rgba(255,255,255,0.98)';
+                        headerLogo.style.boxShadow = splashStyles.boxShadow || '0 8px 18px rgba(0,0,0,0.08)';
+                    } catch (e) {
+                        // ignore if computed styles not available
+                    }
+
+                    // Prepare transitions
+                    splashLogo.style.transition = `opacity ${FADE_DURATION}ms ease-in-out`;
+                    headerLogo.style.transition = `opacity ${FADE_DURATION}ms ease-in-out, width ${FADE_DURATION}ms ease-in-out, height ${FADE_DURATION}ms ease-in-out`;
+
+                    // Make header visible behind the splash before fading splash out to avoid flicker
+                    headerLogo.style.opacity = '1';
+
+                    // Now fade the splash out smoothly; the header (already visible and styled) will be revealed
+                    // splashLogo.style.opacity = '0';
+
+                    // After fade completes, remove the splash overlay and clean up any inline sizing we applied
+                    setTimeout(() => {
+                        splashOverlay.style.display = 'none';
+
+                        // Remove explicit sizing on header so it can respond normally on resize
+                        headerLogo.style.width = '';
+                        headerLogo.style.height = '';
+                        headerLogo.style.padding = '';
+                        headerLogo.style.boxSizing = '';
+                        // keep borderRadius/background/boxShadow for consistent styling
+                        headerLogo.style.borderRadius = '';
+                        headerLogo.style.background = '';
+                        headerLogo.style.boxShadow = '';
+                    }, FADE_DURATION);
+                }, ANIMATION_DURATION);
+            }, INITIAL_DELAY);
+        }
+
+        // Start the app
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
+    </script>
+
+    <!-- Contact Form Script -->
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const formStatus = document.getElementById('formStatus');
+            const form = e.target;
+            
+            // Disable button and show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            formStatus.classList.add('hidden');
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                organization: document.getElementById('organization').value.trim(),
+                message: document.getElementById('message').value.trim()
+            };
+            
+            // Basic client-side validation
+            if (!formData.name || !formData.email || !formData.message) {
+                showStatus('Please fill in all required fields.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Inquiry';
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                showStatus('Please enter a valid email address.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Inquiry';
+                return;
+            }
+            
+            try {
+                // TODO: Replace with your actual Cloud Function URL after deployment
+                const cloudFunctionURL = 'https://sendcontactemail-369388652872.asia-south1.run.app';
+                
+                // Check if URL is configured
+                if (cloudFunctionURL === 'YOUR_CLOUD_FUNCTION_URL_HERE') {
+                    // For testing - show what would be sent
+                    console.log('Form data to be sent:', formData);
+                    showStatus('Form is ready! Please configure your Cloud Function URL in the JavaScript code.', 'warning');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Inquiry';
+                    return;
+                }
+                
+                const response = await fetch(cloudFunctionURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Success
+                    showStatus(result.message || 'Thank you! Your message has been sent successfully. We will get back to you soon.', 'success');
+                    form.reset();
+                } else {
+                    // Error from server
+                    showStatus(result.message || 'Sorry, there was an error sending your message. Please try again or email us directly.', 'error');
+                }
+            } catch (error) {
+                // Network error
+                console.error('Form submission error:', error);
+                showStatus('Network error. Please check your connection and try again, or email us directly at info@oncobridgebio.com', 'error');
+            }
+            
+            // Re-enable button
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Send Inquiry';
+        });
+        
+        function showStatus(message, type) {
+            const formStatus = document.getElementById('formStatus');
+            formStatus.textContent = message;
+            
+            // Remove all status classes
+            formStatus.classList.remove('bg-green-100', 'text-green-800', 'border-green-300');
+            formStatus.classList.remove('bg-red-100', 'text-red-800', 'border-red-300');
+            formStatus.classList.remove('bg-yellow-100', 'text-yellow-800', 'border-yellow-300');
+            
+            // Add appropriate classes based on type
+            if (type === 'success') {
+                formStatus.className = 'p-4 rounded-lg text-sm bg-green-100 text-green-800 border border-green-300';
+            } else if (type === 'error') {
+                formStatus.className = 'p-4 rounded-lg text-sm bg-red-100 text-red-800 border border-red-300';
+            } else if (type === 'warning') {
+                formStatus.className = 'p-4 rounded-lg text-sm bg-yellow-100 text-yellow-800 border border-yellow-300';
+            }
+            
+            formStatus.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
